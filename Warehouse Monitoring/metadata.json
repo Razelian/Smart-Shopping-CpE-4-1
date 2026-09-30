@@ -1,0 +1,10 @@
+{
+  "name": "Warehouse Monitoring System",
+  "description": "Smart shopping embedded warehouse monitoring system prototype with barcode scanning, rack slot telemetry, active alerts, stockout forecast, and event auditing.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

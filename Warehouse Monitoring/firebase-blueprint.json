@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "WarehouseProduct": {
+      "title": "WarehouseProduct",
+      "description": "Product catalog definition for smart shopping warehouse",
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string" },
+        "name": { "type": "string" },
+        "qty_per_box": { "type": "number" },
+        "expiry": { "type": "string" },
+        "category": { "type": "string" },
+        "min_safety_stock": { "type": "number" }
+      },
+      "required": ["sku", "name", "qty_per_box", "expiry"]
+    },
+    "WarehouseSlot": {
+      "title": "WarehouseSlot",
+      "description": "Physical rack telemetry channel state for Slots 1-8",
+      "type": "object",
+      "properties": {
+        "slot": { "type": "number" },
+        "isOccupied": { "type": "boolean" },
+        "currentSku": { "type": "string" },
+        "productName": { "type": "string" },
+        "qty": { "type": "number" },
+        "lastStatusChange": { "type": "string" }
+      },
+      "required": ["slot", "isOccupied", "lastStatusChange"]
+    },
+    "WarehouseAlert": {
+      "title": "WarehouseAlert",
+      "description": "Active operational alert for low stock, expiry or misplacement",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["low_stock", "expiry", "misplacement"] },
+        "sku": { "type": "string" },
+        "slot": { "type": "number" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "severity": { "type": "string", "enum": ["amber", "red"] }
+      },
+      "required": ["id", "type", "sku", "title", "message", "timestamp", "severity"]
+    },
+    "WarehouseEvent": {
+      "title": "WarehouseEvent",
+      "description": "Telemetry event log from embedded sensors, carts and scanners",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "event_type": { "type": "string" },
+        "slot": { "type": "number" },
+        "sku": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "qty": { "type": "number" },
+        "warehouse_delta": { "type": "number" },
+        "shelf_delta": { "type": "number" },
+        "details": { "type": "string" }
+      },
+      "required": ["event_type", "timestamp"]
+    },
+    "WarehousePending": {
+      "title": "WarehousePending",
+      "description": "Scanned items awaiting physical slot placement",
+      "type": "object",
+      "properties": {
+        "box_id": { "type": "string" },
+        "sku": { "type": "string" },
+        "name": { "type": "string" },
+        "qty": { "type": "number" },
+        "expiry": { "type": "string" },
+        "scannedAt": { "type": "string" }
+      },
+      "required": ["box_id", "sku", "scannedAt"]
+    }
+  },
+  "firestore": {
+    "/warehouse_products/{skuId}": {
+      "schema": "WarehouseProduct",
+      "description": "Master products collection keyed by SKU"
+    },
+    "/warehouse_slots/{slotId}": {
+      "schema": "WarehouseSlot",
+      "description": "Real-time state for rack slots 1 to 8"
+    },
+    "/warehouse_alerts/{alertId}": {
+      "schema": "WarehouseAlert",
+      "description": "Active warehouse alerts"
+    },
+    "/warehouse_events/{eventId}": {
+      "schema": "WarehouseEvent",
+      "description": "Audited append-only event stream"
+    },
+    "/warehouse_pending/{pendingId}": {
+      "schema": "WarehousePending",
+      "description": "Pending intake boxes awaiting placement"
+    }
+  }
+}
